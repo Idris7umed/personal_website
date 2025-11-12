@@ -23,6 +23,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        // Register view composers
+        \Illuminate\Support\Facades\View::composer(
+            ['layouts.app', 'layouts.admin', 'front.*'],
+            \App\View\Composers\SettingsComposer::class
+        );
     }
 }

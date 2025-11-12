@@ -1,6 +1,3 @@
-@php 
-$settings=\App\Models\User::first();
-@endphp
 <!doctype html>
 <html lang="ar" dir="rtl">
   <head>  
@@ -16,70 +13,20 @@ $settings=\App\Models\User::first();
     @include('seo.index')
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.rtl.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" />
+    <link rel="stylesheet" href="{{ mix('css/custom.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
     <style type="text/css">
-        *{
-          direction: rtl;
-          text-decoration: none!important;
-        }
-        p{
-          display: inline-block;
-
-        }
-        .main-box-styles {
-            background: #fff;
-            width: 100%;
-            box-shadow: 0px 0px 10px #ddd;
+        /* Dynamic theme colors from settings */
+        :root {
+            --main-color: {{$settings->main_color}};
+            --hover-color: {{$settings->hover_color}};
         }
         .menu-link.active .menu-div{
-            background: {{$settings->main_color}}!important;
-            color: #fff!important;
+            background: var(--main-color) !important;
+            color: #fff !important;
         }
         .menu-link:not(.active):hover .menu-div{
-          background: {{$settings->hover_color}}!important;
-        }
-        .row{
-          margin: 0px;
-        }
-        .main{
-          opacity: 0;
-          min-height: 60vh;
-        }
-        .optimize-fonts *{
-          font-family: 'naskh',sans-serif!important;
-        }
-        .optimize-fonts * {
-          line-height: 1.9;
-        }
-        .optimize-fonts img{
-          cursor: pointer;
-          text-align: center;
-          display: inline-block;
-        }
-
-        .optimize-fonts blockquote ,.optimize-fonts blockquote *{
-          text-align: center;
-        }
-        .optimize-fonts ,
-        .optimize-fonts h1,
-        .optimize-fonts h2,
-        .optimize-fonts h3,
-        .optimize-fonts h4,
-        .optimize-fonts h5,
-        .optimize-fonts h6,
-        .optimize-fonts h1 *,
-        .optimize-fonts h2 *,
-        .optimize-fonts h3 *,
-        .optimize-fonts h4 *,
-        .optimize-fonts h5 *,
-        .optimize-fonts h6 *{
-          font-family: 'kufi-arabic',sans-serif!important;
-        }
-        a{
-          color: #333;
-        }
-        .fancybox__container , .fancybox__container *{
-          direction: ltr;
+          background: var(--hover-color) !important;
         }
     </style>
   </head>
@@ -298,24 +245,16 @@ $settings=\App\Models\User::first();
       </div>
     </div>
     
-    <!-- <script src="https://unpkg.com/vue@next"></script> -->
-   
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ mix('js/frontend.js') }}"></script>
     <script type="text/javascript">
-        $('a[href="' + window.location.href.split('?')[0] + '"] div,a[href="' + window.location.href.split('?')[0] + '"],a[href="' + window.location.href + '"] div,a[href="' + window.location.href + '"]').addClass('active');
-        setTimeout(function(){
-          $('.main').css({'opacity':'1'});
-          $('.loading-overlay').fadeOut(200);
-        },1200);
+        // Initialize Fancybox for images
+        Fancybox.bind("[data-fancybox]", {});
+        Fancybox.bind(".optimize-fonts img", {});
         
-        Fancybox.bind("[data-fancybox]", {
-          // Your options go here
-        });
-        Fancybox.bind(".optimize-fonts img", {
-          
-        });
-
+        // jQuery-based menu highlighting (kept for compatibility)
+        $('a[href="' + window.location.href.split('?')[0] + '"] div,a[href="' + window.location.href.split('?')[0] + '"],a[href="' + window.location.href + '"] div,a[href="' + window.location.href + '"]').addClass('active');
     </script>
     {!!$settings->footer_text!!}
   </body>
