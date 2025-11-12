@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class AdminController extends Controller
 {
@@ -40,8 +43,24 @@ class AdminController extends Controller
         return view('admin.settings.index',compact('settings'));
     }
     public function settings_update(Request $request){
+        // Validate request
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'password' => 'nullable|string|min:6',
+            'avatar' => 'nullable|image|max:5120',
+            'website_logo' => 'nullable|image|max:5120',
+            'main_color' => 'nullable|string|max:20',
+            'hover_color' => 'nullable|string|max:20',
+        ]);
 
-        $user = \App\Models\User::first();
+        if ($validator->fails()) {
+            emotify('error', 'يرجى التحقق من البيانات المدخلة');
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        try {
+            $user = \App\Models\User::first();
 
         if($request->password!=null && strlen($request->password)>=6)
             $user->update([
@@ -88,50 +107,65 @@ class AdminController extends Controller
             $this->use_hub_file($file, $user->id, $user->id);
             $user->update(['website_logo'=>$file]);
         }
-        $user->update([
-            'name'=>$request->name,
-            'email'=>$request->email,
-            'phone'=>$request->phone,
-            'phone2'=>$request->phone2,
-            'default_view'=>$request->default_view,
-            'bio'=>$request->bio,
-            'contact_email'=>$request->contact_email,
-            'portfolios_text'=>$request->portfolios_text,
-            'articles_text'=>$request->articles_text,
-            'clients_text'=>$request->clients_text,
-            'donate_text'=>$request->donate_text,
-            'contact_text'=>$request->contact_text,
-            'hire_text'=>$request->hire_text,
-            'facebook_link'=>$request->facebook_link,
-            'twitter_link'=>$request->twitter_link,
-            'instagram_link'=>$request->instagram_link,
-            'youtube_link'=>$request->youtube_link,
-            'telegram_link'=>$request->telegram_link,
-            'whatsapp_link'=>$request->whatsapp_link,
-            'tiktok_link'=>$request->tiktok_link,
-            'upwork_link'=>$request->upwork_link,
-            'nafezly_link'=>$request->nafezly_link,
-            'linkedin_link'=>$request->linkedin_link,
-            'github_link'=>$request->github_link,
-            'stackoverflow_link'=>$request->stackoverflow_link,
-            'another_link1'=>$request->another_link1,
-            'another_link2'=>$request->another_link2,
-            'another_link3'=>$request->another_link3,
-            'patreon_link'=>$request->patreon_link,
-            'paypal_link'=>$request->paypal_link,
-            'main_color'=>$request->main_color,
-            'hover_color'=>$request->hover_color,
-            'show_portfolios'=>$request->show_portfolios==1?$request->show_portfolios:0,
-            'show_articles'=>$request->show_articles==1?$request->show_articles:0,
-            'show_clients'=>$request->show_clients==1?$request->show_clients:0,
-            'show_donate'=>$request->show_donate==1?$request->show_donate:0,
-            'show_contact'=>$request->show_contact==1?$request->show_contact:0,
-            'show_hire'=>$request->show_hire==1?$request->show_hire:0,
-            'header_text'=>$request->header_text,
-            'footer_text'=>$request->footer_text,
-            'google_recapcha'=>$request->google_recapcha,
-        ]);
-        emotify('success', 'تمت العملية بنجاح');
+            $user->update([
+                'name'=>$request->name,
+                'email'=>$request->email,
+                'phone'=>$request->phone,
+                'phone2'=>$request->phone2,
+                'default_view'=>$request->default_view,
+                'bio'=>$request->bio,
+                'contact_email'=>$request->contact_email,
+                'portfolios_text'=>$request->portfolios_text,
+                'articles_text'=>$request->articles_text,
+                'clients_text'=>$request->clients_text,
+                'donate_text'=>$request->donate_text,
+                'contact_text'=>$request->contact_text,
+                'hire_text'=>$request->hire_text,
+                'facebook_link'=>$request->facebook_link,
+                'twitter_link'=>$request->twitter_link,
+                'instagram_link'=>$request->instagram_link,
+                'youtube_link'=>$request->youtube_link,
+                'telegram_link'=>$request->telegram_link,
+                'whatsapp_link'=>$request->whatsapp_link,
+                'tiktok_link'=>$request->tiktok_link,
+                'upwork_link'=>$request->upwork_link,
+                'nafezly_link'=>$request->nafezly_link,
+                'linkedin_link'=>$request->linkedin_link,
+                'github_link'=>$request->github_link,
+                'stackoverflow_link'=>$request->stackoverflow_link,
+                'another_link1'=>$request->another_link1,
+                'another_link2'=>$request->another_link2,
+                'another_link3'=>$request->another_link3,
+                'patreon_link'=>$request->patreon_link,
+                'paypal_link'=>$request->paypal_link,
+                'main_color'=>$request->main_color,
+                'hover_color'=>$request->hover_color,
+                'show_portfolios'=>$request->show_portfolios==1?$request->show_portfolios:0,
+                'show_articles'=>$request->show_articles==1?$request->show_articles:0,
+                'show_clients'=>$request->show_clients==1?$request->show_clients:0,
+                'show_donate'=>$request->show_donate==1?$request->show_donate:0,
+                'show_contact'=>$request->show_contact==1?$request->show_contact:0,
+                'show_hire'=>$request->show_hire==1?$request->show_hire:0,
+                'header_text'=>$request->header_text,
+                'footer_text'=>$request->footer_text,
+                'google_recapcha'=>$request->google_recapcha,
+            ]);
+            
+            // Clear cached settings after update
+            Cache::forget('site_settings');
+            
+            Log::info('Settings updated', ['user_id' => $user->id]);
+            
+            emotify('success', 'تمت العملية بنجاح');
+        } catch (\Exception $e) {
+            Log::error('Settings update failed', [
+                'error' => $e->getMessage(),
+                'user_id' => auth()->id(),
+            ]);
+            
+            emotify('error', 'حدث خطأ أثناء تحديث الإعدادات');
+        }
+        
         return redirect()->back();
     }
     public function seen_notifications(Request $request){
