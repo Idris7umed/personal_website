@@ -1,0 +1,231 @@
+/* CSS Custom Properties for Theming */
+:root {
+    --primary-color: #3490dc;
+    --hover-color: #2779bd;
+    --bg-color: #ffffff;
+    --text-color: #333333;
+    --border-color: #ddd;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --transition-speed: 0.3s;
+}
+
+/* Global Styles */
+* {
+    direction: rtl;
+    text-decoration: none !important;
+}
+
+p {
+    display: inline-block;
+}
+
+a {
+    color: var(--text-color);
+    transition: color var(--transition-speed) ease;
+}
+
+a:hover {
+    opacity: 0.8;
+}
+
+.row {
+    margin: 0px;
+}
+
+/* Main Box Styles */
+.main-box-styles {
+    background: var(--bg-color);
+    width: 100%;
+    box-shadow: 0px 0px 10px var(--border-color);
+    transition: all var(--transition-speed) ease;
+}
+
+.main-box-styles:hover {
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+/* Menu Styles */
+.menu-link.active .menu-div {
+    color: #fff !important;
+}
+
+.menu-link .menu-div {
+    transition: all var(--transition-speed) ease;
+}
+
+/* Main Content */
+.main {
+    opacity: 0;
+    min-height: 60vh;
+    transition: opacity var(--transition-speed) ease-in-out;
+}
+
+.main.loaded {
+    opacity: 1;
+}
+
+/* Loading Overlay */
+.loading-overlay {
+    position: absolute;
+    width: 100%;
+    height: 40vh;
+    z-index: 1;
+    transition: var(--transition-speed) all ease-in-out;
+    display: flex;
+}
+
+/* Font Optimization */
+.optimize-fonts * {
+    font-family: 'naskh', sans-serif !important;
+    line-height: 1.9;
+}
+
+.optimize-fonts img {
+    cursor: pointer;
+    text-align: center;
+    display: inline-block;
+    max-width: 100%;
+    height: auto;
+}
+
+.optimize-fonts blockquote,
+.optimize-fonts blockquote * {
+    text-align: center;
+}
+
+.optimize-fonts,
+.optimize-fonts h1,
+.optimize-fonts h2,
+.optimize-fonts h3,
+.optimize-fonts h4,
+.optimize-fonts h5,
+.optimize-fonts h6,
+.optimize-fonts h1 *,
+.optimize-fonts h2 *,
+.optimize-fonts h3 *,
+.optimize-fonts h4 *,
+.optimize-fonts h5 *,
+.optimize-fonts h6 * {
+    font-family: 'kufi-arabic', sans-serif !important;
+}
+
+/* Fancybox Styles */
+.fancybox__container,
+.fancybox__container * {
+    direction: ltr;
+}
+
+/* Card Styles */
+.card {
+    border: none;
+    border-radius: 7px;
+    overflow: hidden;
+    transition: all var(--transition-speed) ease;
+}
+
+.card:hover {
+    box-shadow: 0 5px 15px var(--shadow-color);
+}
+
+.card-header {
+    cursor: pointer;
+    transition: background-color var(--transition-speed) ease;
+}
+
+/* Form Styles */
+.form-control {
+    border-radius: 5px;
+    border: 1px solid var(--border-color);
+    transition: border-color var(--transition-speed) ease;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(52, 144, 220, 0.25);
+}
+
+/* Button Styles */
+.btn {
+    border-radius: 5px;
+    transition: all var(--transition-speed) ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px var(--shadow-color);
+}
+
+/* Alert Styles */
+.alert {
+    border-radius: 5px;
+    animation: slideInRight var(--transition-speed) ease;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.alert-click-hide {
+    cursor: pointer;
+    transition: opacity var(--transition-speed) ease;
+}
+
+.alert-click-hide:hover {
+    opacity: 0.8 !important;
+}
+
+/* Responsive Improvements */
+@media (max-width: 768px) {
+    .menu-link {
+        margin: 0.25rem;
+    }
+    
+    .main-box-styles {
+        box-shadow: 0px 0px 5px var(--border-color);
+    }
+}
+
+/* Loading Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.fade-in {
+    animation: fadeIn var(--transition-speed) ease;
+}
+
+/* Avatar Styles */
+.avatar-container {
+    position: relative;
+    display: inline-block;
+}
+
+.avatar-container img {
+    transition: transform var(--transition-speed) ease;
+}
+
+.avatar-container:hover img {
+    transform: scale(1.05);
+}
+
+/* Social Links */
+.social-links a {
+    transition: transform var(--transition-speed) ease;
+}
+
+.social-links a:hover {
+    transform: scale(1.2);
+}

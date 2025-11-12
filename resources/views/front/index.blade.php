@@ -1,5 +1,4 @@
 @php 
-$settings=\App\Models\User::first();
 $faqs =\App\Models\Faq::get();
 @endphp
 @extends('layouts.app',[
